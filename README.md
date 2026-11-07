@@ -24,4 +24,4 @@ uvicorn main:app --relaod
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `date_after` | `DD-MM-YYYY` | sends all events on and after given date |
-| `club` | `string` | sends all events with given club |
+| `club_name` | `string` | sends all events with given club |
