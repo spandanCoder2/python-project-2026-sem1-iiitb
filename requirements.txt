@@ -1,0 +1,6 @@
+#These are the versions used in the lab
+
+fastapi==0.115.6
+uvicorn==0.34.0
+pydantic==2.14.1
+requests
