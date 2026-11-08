@@ -1,6 +1,7 @@
 from fastapi import FastAPI,HTTPException
 import json
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
+from typing import Annotated
 
 # Setting Up Base Model For Club,Event
 
@@ -45,7 +46,7 @@ app = FastAPI(title="EMS API PORTAL" , summary="This portal is used as server hu
 # TODO : Set Up Post ,Patch  ,Put ,Delete in Event
 
 @app.get("/events", summary="used to obtain all events" , response_model=list[Event] )
-def find_all_events(club_name : str | None = None, date_after: str | None = None):
+def find_all_events(club_name : str | None = None, date_after:Annotated[str|None, Field(pattern=r"^\d{2}-\d{2}-\d{4}$")] = None):
     data = []
     results = []
     with open("data.json", "r", encoding="utf-8") as file:
