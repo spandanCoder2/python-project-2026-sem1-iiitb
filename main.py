@@ -44,8 +44,8 @@ app = FastAPI(title="EMS API PORTAL" , summary="This portal is used as server hu
 # CRUD Operation on Events
 # TODO : Set Up Post ,Patch  ,Put ,Delete in Event
 
-@app.get("/events", summary="used to obtain all events" , )
-def find_all_events(events : list[Event] | None = None, club_name : str | None = None, date_after: str | None = None):
+@app.get("/events", summary="used to obtain all events" , response_model=list[Event] )
+def find_all_events(club_name : str | None = None, date_after: str | None = None):
     data = []
     results = []
     with open("data.json", "r", encoding="utf-8") as file:
