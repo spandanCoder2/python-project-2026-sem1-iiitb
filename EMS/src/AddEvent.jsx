@@ -33,12 +33,14 @@ function AddEvent() {
     });
 
     console.log(response)
-    if (!response.ok) {
-      // throw new Error(`HTTP error! status: ${response.status}`);
-      if(response.status == 403){
+    
+    if(response.status == 403){
         alert("Access Denied")
       }
-    }
+    if(response.status == 200){
+        alert("Event Added Successfully")
+      }
+    
 
     const data = await response.json();
     console.log('Success:', data);

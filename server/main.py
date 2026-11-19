@@ -146,13 +146,13 @@ def add_events(club: str, body: Event, role : str = "club core"):
 
 #DELETE EVENTS
 @app.delete("/events")
-def delete_events(body:Event,event: str = "Tech Triad" , club:str = "Zense", role: str = "club core"):
-    if check_password(club.lower().strip(),body.model_dump(exclude_none = True)["password"]):
+def delete_events(club:str = "Zense",title:str|None = None,password:str|None = None, role: str = "club core"):
+    if check_password(club.lower().strip(),password):
         if role.strip().lower() in "club core":
             #Loading data from JSON
             data = load_data()
             positionOfClub = find_position(club)
-            positionOfEvent = find_position_of_event(event, club)
+            positionOfEvent = find_position_of_event(title, club)
 
             data[positionOfClub]["events"].pop(positionOfEvent)
 
@@ -160,7 +160,7 @@ def delete_events(body:Event,event: str = "Tech Triad" , club:str = "Zense", rol
                 json.dump(data, file, indent = 8)
 
             return data 
-        else: raise HTTPException(status_code=403 , detail="Access Denied.")
+    else: raise HTTPException(status_code=403 , detail="Access Denied.")
 
 #PATCH EVENT DETAILS
 @app.patch("/events")
