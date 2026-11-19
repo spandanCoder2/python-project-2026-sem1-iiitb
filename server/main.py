@@ -19,9 +19,11 @@ app.add_middleware(
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(CURRENT_DIR, "data.json")
+PASS_DIR = os.path.join(CURRENT_DIR, "pass.json")
 
 class Event(BaseModel):
     title: str | None = None
+    password: str | None = None
     description: str | None = None
     venue: str | None = None
     date: str | None = None
@@ -72,6 +74,13 @@ def find_position(club : str):
             return i
     return -1
 
+def check_password(club , password):
+    with open(PASS_DIR, "r", encoding="utf-8") as file:
+                data=  json.load(file)
+                if(data[find_position(club)]['pass'] == password):
+                    return True
+                else: return False
+
 #TODO -> If two events happen to have the event str inside of them, only the first one turns up. Do I wanna fix it this?
 def find_position_of_event(event: str, club: str):
     data = load_data()
@@ -113,25 +122,27 @@ def get_event(club_name: str | None = None , date_after: Annotated[str | None , 
 #POST EVENT DETAILS
 @app.post("/events")
 def add_events(club: str, body: Event, role : str = "club core"):
-    if role.strip().lower() in "club core":
-        #Loading data from JSON
-        data = load_data()
-        position = find_position(club)
+    if check_password(club.lower().strip(),body.model_dump(exclude_none = True)["password"]):
+        if role.strip().lower() in "club core":
+            #Loading data from JSON
+            data = load_data()
+            position = find_position(club)
 
-        if(position == -1):
-            raise HTTPException(status_code=400, detail="Invalid Club")
+            if(position == -1):
+                raise HTTPException(status_code=400, detail="Invalid Club")
 
-        #Appending to events        
-        event_details = body.model_dump(exclude_none = True)
-        data[position]["events"].append(event_details)
+            #Appending to events        
+            event_details = body.model_dump(exclude_none = True)
+            event_details.pop("password")
+            data[position]["events"].append(event_details)
 
-        #Saving the event details to the json
-        with open(DATA_DIR, "w", encoding="utf-8") as file:
-            json.dump(data, file, indent=8)
+            #Saving the event details to the json
+            with open(DATA_DIR, "w", encoding="utf-8") as file:
+                json.dump(data, file, indent=8)
 
-    else:
-        raise HTTPException(status_code=403, detail="Access Denied.")
-
+        else:
+            raise HTTPException(status_code=403, detail="Access Denied.")
+    else:raise HTTPException(status_code=403, detail="Access Denied.")
 #DELETE EVENTS
 @app.delete("/events")
 def delete_events(event: str = "Tech Triad" , club:str = "Zense", role: str = "club core"):

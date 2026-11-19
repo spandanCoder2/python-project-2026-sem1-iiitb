@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Login from './login.jsx';
-import EventForm from './EventForm.jsx';
+import AddEvent from './AddEvent.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -19,7 +19,7 @@ createRoot(document.getElementById('root')).render(
             </a>
             <nav className="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-700	flex flex-wrap items-center text-base justify-center">
               <Link to="/" className="mr-5 hover:text-white">Home</Link>
-              <Link to="/EventForm" className="mr-5 hover:text-white">Add Event</Link>
+              <Link to="/AddEvent" className="mr-5 hover:text-white">Add Event</Link>
               <a className="mr-5 hover:text-white">Fest</a>
               <a className="mr-5 hover:text-white">Voluteer</a>
             </nav>
@@ -35,7 +35,7 @@ createRoot(document.getElementById('root')).render(
         </header>
         <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/Eventform" element={<EventForm />} />
+        <Route path="/AddEvent" element={<AddEvent />} />
         <Route path="/login" element={<Login />} />
       </Routes>
   </BrowserRouter>
