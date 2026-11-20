@@ -96,6 +96,21 @@ def searchInList(key , list , target):
             return True
         else: return False
 
+def find_member_position(club : str , member : str):
+    data = load_data()
+    if (find_position(club) != -1):
+        for i in range(len(data[find_position(club)]["members"])):
+            if (data[find_position(club)]["members"][i]["name"].lower().strip() == member.lower().strip()):
+                 return i
+
+        return -1
+    else:
+        raise HTTPException(status_code = 404 , details = "Club not found.")         # Use in @app.patch doubtfull to me .        
+
+def save_data(data):
+    with open(DATA_DIR, "w" , encoding = "utf-8") as file:                     # This is the code for saving the data in file DATA_DIR .
+        json.dump(DATA_DIR, data, indent = 8)
+
 #---------------------------------------------------------------------------------------------------------------------------------------------------
 
 #GET EVENT DETAILS
@@ -291,4 +306,47 @@ def get_clubs(club_name:str | None = None , event_name:str|None = None,member_na
         results.append(club)
     return results
 
+#TODO: Adding POST PATCH and DELETE in club
 
+@app.post("/club_member/volunteer")                                       #doubts in this .
+def add_volunteer(club_name : str , volunteer : str , event : str):
+    data = load_data()
+    if (find_position(club_name) != -1) and (find_position_of_event(event , club_name) != -1):
+        data[find_position(club_name)]["events"][find_position_of_event(event , club_name)]["volunteers"].append(volunteer)
+        #saving via functions .
+        save_data(data)
+    else:
+            raise HTTPException(status_code=404, detail="Event not found (position of event)")
+
+@app.get("/{club_name}/{event_name}/volunteers")
+def get_volunteer_name_for_event(event_name : str , club_name : str):
+     data = load_data()
+     if (find_position(club_name) != -1) and (find_position_of_event(event_name , club_name) != -1):
+          return data[find_position(club_name)]["events"][find_position_of_event]["volunteers"]
+     else:
+          raise HTTPException(status_code = 404 , detail = "Event not found or volunteers not initialised")
+
+@app.post("/{club_name}/club_member")
+def add_club_member(club_name : str , member_name : str , isCore : bool):
+     data = load_data()
+     if(find_position(club_name) != -1):
+          data[find_position(club_name)]["members"].append({"name" : member_name , "isCore" : isCore})
+
+     save_data(data)
+
+@app.patch("/{club_name}/club_member")
+def update_club_member(member_name : str , club_name : str , body : Club):
+    data = load_data()
+    if (find_member_position(club_name , member_name) != -1):
+        d = body.model_dump(exclude_none = True)  
+        data[find_position(club_name)]["member"][find_member_position(club_name , member_name)].update(d)
+
+    save_data(data)
+
+@app.delete("/{club_name}/club_member")
+def del_club_member(club_name : str , club_member : str):
+    data = load_data()
+    if (find_member_position(club_name , club_member) != -1):
+        data[find_position(club_name)]["members"][find_member_position(club_name , club_member)].pop()
+
+    save_data(data)
