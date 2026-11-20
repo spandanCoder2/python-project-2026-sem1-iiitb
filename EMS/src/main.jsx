@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Login from './login.jsx';
 import AddEvent from './AddEvent.jsx';
 import DeleteEvent from './DeleteEvent.jsx';
+import UpdateEvent from './UpdateEvent.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -22,6 +23,7 @@ createRoot(document.getElementById('root')).render(
               <Link to="/" className="mr-5 hover:text-white">Home</Link>
               <Link to="/AddEvent" className="mr-5 hover:text-white">Add Event</Link>
               <Link to="/DeleteEvent" className="mr-5 hover:text-white">Remove Event</Link>
+              <Link to="/UpdateEvent" className="mr-5 hover:text-white">Update Event</Link>
               <a className="mr-5 hover:text-white">Voluteer</a>
             </nav>
             <Link to="/login">
@@ -38,6 +40,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/" element={<App />} />
         <Route path="/AddEvent" element={<AddEvent />} />
         <Route path="/DeleteEvent" element={<DeleteEvent />} />
+        <Route path="/UpdateEvent" element={<UpdateEvent />} />
         <Route path="/login" element={<Login />} />
       </Routes>
   </BrowserRouter>
