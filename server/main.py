@@ -151,7 +151,7 @@ def add_events(club: str, body: Event,password : str | None = None , role : str 
 
 #DELETE EVENTS
 @app.delete("/events" , status_code = 204)
-def delete_events(club:str = "Zense",title:str|None = None,password:str|None = None, role: str = "club core"):
+def delete_events(club:str = "zense",title:str|None = None,password:str|None = None, role: str = "club core"):
     if check_password(club.lower().strip(),password):
         if role.strip().lower() in "club core":
             #Loading data from JSON
@@ -171,7 +171,7 @@ def delete_events(club:str = "Zense",title:str|None = None,password:str|None = N
 @app.patch("/events")
 def patch_events(body: Event,password:str|None = None, event: str = "Strings & Stories" , club:str = "Symphony", role: str = "club core"):
     if check_password(club.lower().strip(),password):
-        if role.strip().lower() in "club core" or role.strip.lower() in "club member":
+        if role.strip().lower() in "club core" or role.strip().lower() in "club member":
             data = load_data()
             positionOfClub = find_position(club)
             positionOfEvent = find_position_of_event(event, club)
