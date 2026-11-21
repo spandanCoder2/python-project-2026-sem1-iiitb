@@ -38,6 +38,10 @@ class Club(BaseModel):
     members: list[str] | None = None
     events: list[Event] | None = None
 
+class Member(BaseModel):
+    members: list[str] | None = None
+    isCore: bool | None = None
+
 #HELPER FUNCTIONS
 #--------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -306,7 +310,37 @@ def get_clubs(club_name:str | None = None , event_name:str|None = None,member_na
         results.append(club)
     return results
 
-#TODO: Adding POST PATCH and DELETE in club
+@app.post("/club")
+def add_club(club_name : str):
+    data = load_data()
+    if (find_position(club_name) == -1):
+        d = {"club" : club_name , "members" : [] , "events" : []}
+        data.append(d)
+
+        save_data(data)
+    else:
+        raise HTTPException(status_code = "" , details = "The club was already their.")          # Here I have doubt on status code .
+    
+@app.delete("/club")
+def delete_club(club_name : str):
+    if (find_position(club_name) != -1):
+        data = load_data()
+        data.pop(find_position(club_name))
+
+        save_data(data)
+    else:
+        raise HTTPException(status_code = "" , details = "position of club not found! ")         # Here I have a doubt regarding the fact for status code .
+
+@app.patch("/club")
+def update_club_name(initial_club_name : str , new_club_name : str):
+
+    if (find_position(initial_club_name) != -1):
+        data = load_data()
+        data[find_position(initial_club_name)]["club"] = new_club_name
+
+        save_data(data)
+    else:
+        raise HTTPException(status_code = "" , details = "club not found! ")  # Here I have status code doubts.
 
 @app.post("/club_member/volunteer")                                       #doubts in this .
 def add_volunteer(club_name : str , volunteer : str , event : str):
@@ -327,26 +361,27 @@ def get_volunteer_name_for_event(event_name : str , club_name : str):
           raise HTTPException(status_code = 404 , detail = "Event not found or volunteers not initialised")
 
 @app.post("/{club_name}/club_member")
-def add_club_member(club_name : str , member_name : str , isCore : bool):
+def add_club_member(club_name : str , mem_body : Member):
      data = load_data()
      if(find_position(club_name) != -1):
-          data[find_position(club_name)]["members"].append({"name" : member_name , "isCore" : isCore})
+          d = mem_body.model_dump(exclude_none = True)
+          data[find_position(club_name)]["members"].append(d)
 
      save_data(data)
 
 @app.patch("/{club_name}/club_member")
-def update_club_member(member_name : str , club_name : str , body : Club):
+def update_club_member(club_name : str , body : Member):
     data = load_data()
-    if (find_member_position(club_name , member_name) != -1):
-        d = body.model_dump(exclude_none = True)  
-        data[find_position(club_name)]["member"][find_member_position(club_name , member_name)].update(d)
+    d = body.model_dump(exclude_none = True)
+    if (find_member_position(club_name , d["name"]) != -1):
+        data[find_position(club_name)]["member"][find_member_position(club_name , d["name"])].update(d)
 
-    save_data(data)
+        save_data(data)
 
 @app.delete("/{club_name}/club_member")
 def del_club_member(club_name : str , club_member : str):
     data = load_data()
     if (find_member_position(club_name , club_member) != -1):
-        data[find_position(club_name)]["members"][find_member_position(club_name , club_member)].pop()
+        data[find_position(club_name)]["members"].pop(find_member_position(club_name , club_member))
 
     save_data(data)
