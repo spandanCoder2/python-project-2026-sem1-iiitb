@@ -8,6 +8,7 @@ import UpdateEvent from './UpdateEvent.jsx';
 import Home from './Home.jsx';
 import Volunteer from './Volunteer.jsx';
 import { BrowserRouter , Link , Routes , Route } from 'react-router-dom';
+import Analytics from './Analytics.jsx';
 
 
 function App() {
@@ -85,7 +86,7 @@ function App() {
         <ul className="dropdown-menu absolute z-20">
           <li className=' p-2 w-full bg-slate-800 hover:bg-slate-700 rounded-t-md'>
             <Link to="/AddClub" onClick={() => setIsOpenClub(false)}>
-              Add Club
+              Join Club
             </Link>
           </li>
           <li className=' p-2 w-full bg-slate-800 hover:bg-slate-700 rounded-b-md'>
@@ -122,6 +123,7 @@ function App() {
           <Route path="/AddEvent" element={<AddEvent />} />
           <Route path="/DeleteEvent" element={<DeleteEvent />} />
           <Route path="/UpdateEvent" element={<UpdateEvent />} />
+          <Route path="/Analytics" element={<Analytics />} />
           <Route path="/Volunteer" element={<Volunteer />} />
           <Route path="/login" element={<Login />} />
         </Routes>
